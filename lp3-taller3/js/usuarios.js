@@ -11,20 +11,25 @@ export async function cargarUsuarios() {
     const usuarios = await response.json();
 
     if (usuarios.length === 0) {
-      main.innerHTML = "<p>No hay usuarios registrados.</p>";
+      main.innerHTML = "<h2>Usuarios</h2><p>No hay usuarios registrados.</p>";
       return;
     }
 
-    const lista = document.createElement("ul");
+    let html = '<h2>Usuarios Registrados</h2><div class="lista-usuarios">';
+
     usuarios.forEach((u) => {
-      const item = document.createElement("li");
-      item.textContent = `${u.nombre} (${u.email})`;
-      lista.appendChild(item);
+      html += `
+        <div class="usuario-card">
+          <h3>${u.nombre}</h3>
+          <p><strong>Correo:</strong> ${u.correo}</p>
+          <p><strong>Fecha registro:</strong> ${new Date(u.fecha_registro).toLocaleDateString('es-ES')}</p>
+        </div>
+      `;
     });
 
-    main.innerHTML = "<h2>Usuarios</h2>";
-    main.appendChild(lista);
+    html += '</div>';
+    main.innerHTML = html;
   } catch (error) {
-    main.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+    main.innerHTML = `<h2>Usuarios</h2><p style="color:red;">Error: ${error.message}</p>`;
   }
 }

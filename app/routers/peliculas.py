@@ -54,19 +54,23 @@ def crear_pelicula(
     - **clasificacion**: Clasificación por edad (G, PG, PG-13, R, etc.)
     - **sinopsis**: Breve descripción de la trama
     """
-    # TODO: Verificar que no exista una película con el mismo título y año
-    statement = 
-    
-    existing_pelicula = 
+    statement = select(Pelicula).where(
+        Pelicula.titulo == pelicula.titulo,
+        Pelicula.año == pelicula.año
+    )
+
+    existing_pelicula = session.exec(statement).first()
     if existing_pelicula:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Ya existe una película con el título '{pelicula.titulo}' del año {pelicula.año}"
         )
-    
-    # TODO: Crear la nueva película
-    db_pelicula = 
-    
+
+    db_pelicula = Pelicula.model_validate(pelicula)
+    session.add(db_pelicula)
+    session.commit()
+    session.refresh(db_pelicula)
+
     return db_pelicula
 
 
@@ -81,12 +85,11 @@ def obtener_pelicula(
     
     - **pelicula_id**: ID de la película
     """
-    # TODO: Buscar la película por ID
     pelicula = session.get(Pelicula, pelicula_id)
     if not pelicula:
         raise HTTPException(
-            # TODO: Código y Detalle del Error
-
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Película con id {pelicula_id} no encontrada"
         )
     return pelicula
 
@@ -104,12 +107,21 @@ def actualizar_pelicula(
     - **pelicula_id**: ID de la película a actualizar
     - Los campos son opcionales, solo se actualizan los proporcionados
     """
-    # TODO: Buscar la película
-    db_pelicula = 
+    db_pelicula = session.get(Pelicula, pelicula_id)
 
+    if not db_pelicula:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Película con id {pelicula_id} no encontrada"
+        )
 
-    # TODO: Actualizar solo los campos proporcionados
-    pelicula_data = 
+    pelicula_data = pelicula_update.model_dump(exclude_unset=True)
+    for key, value in pelicula_data.items():
+        setattr(db_pelicula, key, value)
+
+    session.add(db_pelicula)
+    session.commit()
+    session.refresh(db_pelicula)
 
     return db_pelicula
 
@@ -163,32 +175,28 @@ def buscar_peliculas(
     - **año_min**: Busca películas desde este año en adelante
     - **año_max**: Busca películas hasta este año
     """
-    # TODO: Construir la consulta base
-    # statement = select(Pelicula)
-    
-    # TODO: Agregar filtros según los parámetros proporcionados
-    # if titulo:
-    #     statement = statement.where(col(Pelicula.titulo).contains(titulo))
-    
-    # if director:
-    #     statement = statement.where(col(Pelicula.director).contains(director))
-    
-    # if genero:
-    #     statement = statement.where(col(Pelicula.genero).contains(genero))
-    
-    # if año:
-    #     statement = statement.where(Pelicula.año == año)
-    
-    # if año_min:
-    #     statement = statement.where(Pelicula.año >= año_min)
-    
-    # if año_max:
-    #     statement = statement.where(Pelicula.año <= año_max)
-    
-    # TODO: Ejecutar la consulta y retornar resultados
-    # peliculas = session.exec(statement).all()
-    # return peliculas
-    pass
+    statement = select(Pelicula)
+
+    if titulo:
+        statement = statement.where(col(Pelicula.titulo).contains(titulo))
+
+    if director:
+        statement = statement.where(col(Pelicula.director).contains(director))
+
+    if genero:
+        statement = statement.where(col(Pelicula.genero).contains(genero))
+
+    if año:
+        statement = statement.where(Pelicula.año == año)
+
+    if año_min:
+        statement = statement.where(Pelicula.año >= año_min)
+
+    if año_max:
+        statement = statement.where(Pelicula.año <= año_max)
+
+    peliculas = session.exec(statement).all()
+    return peliculas
 
 
 # TODO: Opcional - Endpoint para obtener películas más populares
@@ -202,12 +210,17 @@ def peliculas_populares(
     
     - **limit**: Número de películas a retornar (máximo 50)
     """
-    # TODO: Consultar películas ordenadas por número de favoritos
     from sqlalchemy import func
-    statement = 
+    statement = (
+        select(Pelicula, func.count(Favorito.id).label("count"))
+        .outerjoin(Favorito, Pelicula.id == Favorito.id_pelicula)
+        .group_by(Pelicula.id)
+        .order_by(func.count(Favorito.id).desc())
+        .limit(limit)
+    )
 
-    results = 
-    peliculas = [ result[0] for result in results ]
+    results = session.exec(statement).all()
+    peliculas = [result[0] for result in results]
     return peliculas
 
 
@@ -223,19 +236,17 @@ def peliculas_por_clasificacion(
     
     - **clasificacion**: G, PG, PG-13, R, NC-17
     """
-    # TODO: Validar clasificación
     clasificaciones_validas = ["G", "PG", "PG-13", "R", "NC-17"]
     if clasificacion.upper() not in clasificaciones_validas:
         raise HTTPException(
-            # TODO: código y detalle del error
-
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Clasificación inválida. Use: {', '.join(clasificaciones_validas)}"
         )
-    
-    # TODO: Buscar películas por clasificación
-    # statement = select(Pelicula).where(
-    #     Pelicula.clasificacion == clasificacion.upper()
-    # ).limit(limit)
-    # peliculas = session.exec(statement).all()
+
+    statement = select(Pelicula).where(
+        Pelicula.clasificacion == clasificacion.upper()
+    ).limit(limit)
+    peliculas = session.exec(statement).all()
     return peliculas
 
 
@@ -250,9 +261,7 @@ def peliculas_recientes(
     
     - **limit**: Número de películas a retornar
     """
-    # TODO: Consultar películas ordenadas por fecha de creación
-    # statement = select(Pelicula).order_by(Pelicula.fecha_creacion.desc()).limit(limit)
-    # peliculas = session.exec(statement).all()
-    # return peliculas
-    pass
+    statement = select(Pelicula).order_by(Pelicula.fecha_creacion.desc()).limit(limit)
+    peliculas = session.exec(statement).all()
+    return peliculas
 
