@@ -3,6 +3,11 @@
 
 Una [API RESTful](https://aws.amazon.com/es/what-is/restful-api/) para gestionar usuarios, películas y favoritos. Desarrollada con [FastAPI](https://fastapi.tiangolo.com/), [SQLModel](https://sqlmodel.tiangolo.com/) y [Pydantic](https://docs.pydantic.dev/).
 
+## 🌐 Enlace al Frontend
+
+Puedes explorar la interfaz web conectada a esta API en el siguiente enlace:
+
+🔗 [https://dashing-zuccutto-641bca.netlify.app](https://dashing-zuccutto-641bca.netlify.app)
 ## Descripción
 
 Esta API permite administrar:
