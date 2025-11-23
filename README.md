@@ -1,3 +1,4 @@
+
 # API de Películas
 
 Una [API RESTful](https://aws.amazon.com/es/what-is/restful-api/) para gestionar usuarios, películas y favoritos. Desarrollada con [FastAPI](https://fastapi.tiangolo.com/), [SQLModel](https://sqlmodel.tiangolo.com/) y [Pydantic](https://docs.pydantic.dev/).
@@ -176,3 +177,7 @@ lp3-taller2
 
 12. **Listas personalizadas**: Permitir a los usuarios crear listas temáticas personalizadas más allá de favoritos (por ejemplo: "Pendientes por ver", "Clásicos", "Para ver en familia").
 
+
+# ip3-taller2-taller3
+ IP2 – Backend: API RESTful de Películas con FastAPI IP3 – Frontend: Interfaz Web Interactiva con HTML, CSS y JavaScript
+ bebd4d7fc724aed5948653c93b434ddd79b3dc64
