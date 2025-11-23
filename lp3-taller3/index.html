@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API de Películas 🎬</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .estadisticas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .tarjeta {
+      background-color: #f0f4f8;
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 220px;
+      transition: transform 0.2s ease;
+    }
+    .tarjeta:hover {
+      transform: scale(1.05);
+    }
+    .tarjeta h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .tarjeta .valor {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>API de Películas</h1>
+    <nav>
+      <button id="nav-usuarios">Usuarios</button>
+      <button id="nav-peliculas">Películas</button>
+      <button id="nav-favoritos">Favoritos</button>
+      <button id="nav-agregar-pelicula">Agregar Película</button>
+      <button id="nav-agregar-favorito">Agregar Favorito</button>
+      <button id="nav-estadisticas">Estadísticas</button>
+    </nav>
+  </header>
+
+  <main id="contenido-principal">
+    <section id="bienvenida">
+      <h2>Bienvenida</h2>
+      <p>Explora y gestiona películas, usuarios y favoritos desde esta interfaz web.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Lina Chamorro - Proyecto educativo</p>
+  </footer>
+
+  <script type="module">
+    async function cargarEstadisticas() {
+      try {
+        const respuesta = await fetch("http://127.0.0.1:8000/api/estadisticas/");
+        const datos = await respuesta.json();
+
+        document.querySelector("#usuarios .valor").textContent = datos.total_usuarios;
+        document.querySelector("#peliculas .valor").textContent = datos.total_peliculas;
+        document.querySelector("#favoritos .valor").textContent = datos.total_favoritos;
+        document.querySelector("#popular .valor").textContent = datos.pelicula_mas_popular;
+        document.querySelector("#activo .valor").textContent = datos.usuario_mas_activo;
+      } catch (error) {
+        console.error("Error al cargar estadísticas:", error);
+        document.getElementById("contenido-principal").innerHTML = "<p>Error al cargar estadísticas.</p>";
+      }
+    }
+
+    document.getElementById("nav-estadisticas").addEventListener("click", () => {
+      document.getElementById("contenido-principal").innerHTML = `
+        <section id="estadisticas">
+          <h2>📊 Estadísticas</h2>
+          <div class="estadisticas">
+            <div class="tarjeta" id="usuarios">
+              <h3>👥 Total de usuarios</h3>
+              <p class="valor">Cargando...</p>
+            </div>
+            <div class="tarjeta" id="peliculas">
+              <h3>🎬 Total de películas</h3>
+              <p class="valor">Cargando...</p>
+            </div>
+            <div class="tarjeta" id="favoritos">
+              <h3>⭐ Total de favoritos</h3>
+              <p class="valor">Cargando...</p>
+            </div>
+            <div class="tarjeta" id="popular">
+              <h3>🏆 Película más popular</h3>
+              <p class="valor">Cargando...</p>
+            </div>
+            <div class="tarjeta" id="activo">
+              <h3>👑 Usuario más activo</h3>
+              <p class="valor">Cargando...</p>
+            </div>
+          </div>
+        </section>
+      `;
+      cargarEstadisticas();
+    });
+  </script>
+</body>
+</html>
