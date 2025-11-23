@@ -1,5 +1,23 @@
 # API de Películas - Frontend
+👩‍💻 
 
+**Lina Chamorro**  
+Estudiante de Ingeniería de Sistemas – Uniremington  
+
+## 💻 `README.md` para IP3 – Frontend Web para la API de Películas
+
+```markdown
+# 💻 Interfaz Web para la API de Películas – IP3
+
+Este proyecto implementa una interfaz web interactiva que consume la API RESTful desarrollada en IP2. Permite gestionar usuarios, películas y favoritos, y visualizar estadísticas dinámicas.
+
+## 🌐 Vista interactiva del frontend
+
+Puedes explorar la interfaz visual del proyecto en v0.app:
+
+🔗 [Ver frontend en https://dashing-zuccutto-641bca.netlify.app/]
+
+Este prototipo fue generado a partir del código del repositorio, adaptado para mostrar de forma visual e interactiva la estructura y funcionalidades del frontend del proyecto.
 Proyecto **lp3-taller3**: Desarrollo de un sitio web interactivo para gestionar películas, usuarios y favoritos, consumiendo la API RESTful del proyecto **lp3-taller2**.
 
 ## Descripción
@@ -37,7 +55,7 @@ Al completar este taller, los estudiantes serán capaces de:
 2. **Clonar** el repositorio:
 
    ```bash
-   git clone https://github.com/TU_USUARIO/lp3-taller3.git
+  (https://github.com/life151/ip3-taller2-taller3/tree/main)
    ```
 
 3. Asegúrate de que el proyecto **lp3-taller2** esté ejecutándos, verifica que la API responda en: `http://127.0.0.1:8000/docs`
